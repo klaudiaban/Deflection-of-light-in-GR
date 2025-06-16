@@ -11,7 +11,11 @@ import dash_bootstrap_components as dbc
 def schw_null_geodesics(t, w, M, L):
     r, rdot, phi = w
     phidot = L / r ** 2
-    return [rdot, L ** 2 * (r - 3 * M) / r ** 4, phidot]
+    return [
+        rdot, 
+        L ** 2 * (r - 3 * M) / r ** 4, 
+        phidot
+    ]
 
 
 def expected_schw_light_bending(r, M):
@@ -69,7 +73,6 @@ def build_light_ray_figure(M, impact_params, initial_x=-50):
             go.Scatter(x=x, y=y, mode="lines", name=f"b = {b}", line=dict(width=2))
         )
 
-    # Event horizon circle
     R = 2 * M
     theta = np.linspace(0, 2 * np.pi, 200)
     fig.add_trace(
