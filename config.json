@@ -1,0 +1,4 @@
+{
+    "_comment": "Choose between 'rk4', 'euler', or 'solve_ivp'",
+    "method": "rk4"
+}

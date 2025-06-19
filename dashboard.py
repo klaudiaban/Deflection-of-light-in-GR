@@ -3,54 +3,20 @@ from scipy.integrate import solve_ivp
 import plotly.graph_objs as go
 from dash import Dash, dcc, html, Input, Output
 import dash_bootstrap_components as dbc
+import json
+from solved_problem import solve, expected_schw_light_bending, calculate_deflection, calculate_initial_conditions
 
-# -----------------------------------------------------------------------------
-# Physics functions
-# -----------------------------------------------------------------------------
+with open("config.json") as f:
+    config = json.load(f)
 
-def schw_null_geodesics(t, w, M, L):
-    r, rdot, phi = w
-    phidot = L / r ** 2
-    return [
-        rdot, 
-        L ** 2 * (r - 3 * M) / r ** 4, 
-        phidot
-    ]
+METHOD = config["method"]
 
-
-def expected_schw_light_bending(r, M):
-    return 4.0 * M / r
-
-
-def solve_trajectory(initial, M, L, t_max=10000.0, dt=0.05):
+def solve_trajectory(initial, M, L, t_max=1000.0, dt=0.05):
     t_eval = np.arange(0.0, t_max, dt)
-    sol = solve_ivp(
-        schw_null_geodesics,
-        (0.0, t_max),
-        initial,
-        t_eval=t_eval,
-        args=(M, L),
-        rtol=1e-9,
-        atol=1e-9,
-    )
-    r, phi = sol.y[0], sol.y[2]
-    x, y = r * np.cos(phi), r * np.sin(phi)
-    return x, y, t_eval
-
-
-def calculate_deflection(x, y, t):
-    n = len(t)
-    grad = (y[n * 4 // 5] - y[-1]) / (x[n * 4 // 5] - x[-1])
-    return np.arctan(-grad)
-
-
-def calculate_initial_conditions(b, initial_x):
-    initial_r = np.sqrt(b ** 2 + initial_x ** 2)
-    initial_phi = np.arccos(initial_x / initial_r)
-    initial_rdot = np.cos(initial_phi)
-    initial_phidot = -np.sqrt((1.0 - initial_rdot ** 2) / initial_r ** 2)
-    L = initial_r ** 2 * initial_phidot
-    return [initial_r, initial_rdot, initial_phi], L
+    r, phi = solve((0.0, t_max), t_eval, initial, [M, L]) 
+    x = r * np.cos(phi)
+    y = r * np.sin(phi)
+    return x, y, t_eval[:len(r)] 
 
 # -----------------------------------------------------------------------------
 # Styling parameters
