@@ -3,6 +3,15 @@ Interactive Dash applications that **numerically integrate null geodesics in the
 
 * watch photon trajectories curve (or plunge) around a non-rotating black hole;  
 * compare the exact numerical deflection angle with the theoretical weak-field formula  
+* choose the numerical integration method used for solving the differential equations via the `config.json` file
+
+You can switch between the following ODE solvers:
+
+* `solve_ivp` (SciPy's RK45 by default)
+* `rk4` (Runge-Kutta 4th-order)
+* `euler` (explicit Euler method)
+
+Just edit the `"method"` field in `config.json` to use a different solver.
 
 **2D Dashboard:** Classic top‑down view; photon paths bend in the  plane & compare to the weak‑field formula.
 
